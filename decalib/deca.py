@@ -308,6 +308,17 @@ class DECA(nn.Module):
                         dense_faces,
                         colors = dense_colors,
                         inverse_face_order=True)
+        
+    def save_obj_no_tex(self, filename, opdict):
+        i = 0
+        vertices = opdict['verts'][i].cpu().numpy()
+        faces = self.render.faces[0].cpu().numpy()
+
+        # Save base mesh (no textures/normals)
+        util.write_obj(filename, vertices, faces,
+                    texture=None,  # Force no texture
+                    uvcoords=None,  # No UVs
+                    normal_map=None)  # No normals
     
     def run(self, imagepath, iscrop=True):
         ''' An api for running deca given an image path
