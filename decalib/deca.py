@@ -301,7 +301,7 @@ class DECA(nn.Module):
         # upsample mesh, save detailed mesh
         texture = texture[:,:,[2,1,0]]
         normals = opdict['normals'][i].cpu().numpy()
-        displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
+        displacement_map = opdict['displacement_map'][i].detach().cpu().numpy().squeeze()
         dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)
         util.write_obj(filename.replace('.obj', '_detail.obj'), 
                         dense_vertices, 

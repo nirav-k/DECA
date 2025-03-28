@@ -15,9 +15,3 @@ wget --post-data "username=$username&password=$password" 'https://download.is.tu
 unzip ./data/FLAME2020.zip -d ./data/FLAME2020
 mv ./data/FLAME2020/generic_model.pkl ./data
 # rm -rf ./models
-
-echo -e "\nDownloading deca_model..."
-
-FILEID=1rp8kdyLPvErw2dTmqtjISRVvQLj6Yzje
-FILENAME=./data/deca_model.tar
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id='${FILEID} -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${FILEID}" -O $FILENAME && rm -rf /tmp/cookies.txt

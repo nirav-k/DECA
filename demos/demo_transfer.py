@@ -57,6 +57,10 @@ def main(args):
     # transfer exp code
     id_codedict['pose'][:,3:] = exp_codedict['pose'][:,3:]
     id_codedict['exp'] = exp_codedict['exp']
+
+    # RESET POSE HERE (before decoding)
+    id_codedict['pose'][:, :3] = 0  # Zero rotation (neck)
+
     transfer_opdict, transfer_visdict = deca.decode(id_codedict)
     id_visdict['transferred_shape'] = transfer_visdict['shape_detail_images']
     cv2.imwrite(os.path.join(savefolder, name + '_animation.jpg'), deca.visualize(id_visdict))
