@@ -17,7 +17,7 @@ def run_script(script_name, args):
 if __name__ == "__main__":
     # Define arguments for each script
     common_args = [
-        "--image_path", "TestSamples/examples/Mit/Dutwi.jpg",
+        "--image_path", "TestSamples/examples/Mit/Deep.jpg",
         "--savefolder", "output/",
         "--rasterizer_type", "pytorch3d",
         "--saveObj", "True",
@@ -26,3 +26,6 @@ if __name__ == "__main__":
     # Run the first script (Expression Transfer)
     run_script("demos/custom_transfer.py", common_args + ["--exp_path", "TestSamples/exp/"] + ["--useTex", "False"])
     run_script("demos/custom_transfer_neutral.py", common_args + ["--useTex", "True"])
+
+    os.remove("output/Face_Neutral_normals.png")
+    os.remove("output/Face_Neutral.mtl")
