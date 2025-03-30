@@ -43,7 +43,6 @@ def main(args):
     # identity reference
     i = 0
     name = testdata[i]['imagename']
-    savepath = '{}/{}.jpg'.format(savefolder, name)
     images = testdata[i]['image'].to(device)[None,...]
     with torch.no_grad():
         id_codedict = deca.encode(images)
@@ -64,15 +63,13 @@ def main(args):
 
     transfer_opdict, transfer_visdict = deca.decode(id_codedict)
     id_visdict['transferred_shape'] = transfer_visdict['shape_detail_images']
-    cv2.imwrite(os.path.join(savefolder, name + '_animation.jpg'), deca.visualize(id_visdict))
+    #cv2.imwrite(os.path.join(savefolder, name + '_animation.jpg'), deca.visualize(id_visdict))
 
     transfer_opdict['uv_texture_gt'] = id_opdict['uv_texture_gt']
     if args.saveDepth or args.saveKpt or args.saveObj or args.saveMat or args.saveImages:
-        os.makedirs(os.path.join(savefolder, name, 'reconstruction'), exist_ok=True)
         os.makedirs(os.path.join(savefolder, name, 'animation'), exist_ok=True)
     
     # -- save results
-    image_name = name
     for save_type in ['reconstruction', 'animation']:
         if save_type == 'reconstruction':
             visdict = id_codedict; opdict = id_opdict

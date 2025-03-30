@@ -1,4 +1,6 @@
 import subprocess
+import os
+import time
 
 def run_script(script_name, args):
     cmd = ["python", script_name] + args
@@ -15,15 +17,12 @@ def run_script(script_name, args):
 if __name__ == "__main__":
     # Define arguments for each script
     common_args = [
-        "--image_path", "TestSamples/examples/Mit/Mit cropped.jpg",
-        "--exp_path", "TestSamples/exp/",
+        "--image_path", "TestSamples/examples/Mit/Dutwi.jpg",
         "--savefolder", "output/",
         "--rasterizer_type", "pytorch3d",
-        "--saveObj", "True"
+        "--saveObj", "True",
     ]
 
     # Run the first script (Expression Transfer)
-    run_script("demos/neutral_transfer.py", common_args + ["--useTex", "True"])
-
-    # Run the second script (Processing & Saving)
-    run_script("demos//vowel_transfer.py", common_args + ["--useTex", "False"])
+    run_script("demos/custom_transfer.py", common_args + ["--exp_path", "TestSamples/exp/"] + ["--useTex", "False"])
+    run_script("demos/custom_transfer_neutral.py", common_args + ["--useTex", "True"])

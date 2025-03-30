@@ -153,6 +153,75 @@ def write_obj(obj_name,
                     )
             cv2.imwrite(texture_name, texture)
 
+def write_obj_custom(obj_name,
+              vertices,
+              faces,
+              colors=None,
+              texture=None,
+              uvcoords=None,
+              uvfaces=None,
+              inverse_face_order=False,
+              normal_map=None,
+              ):
+    ''' Save 3D face model with texture. 
+    Ref: https://github.com/patrikhuber/eos/blob/bd00155ebae4b1a13b08bf5a991694d682abbada/include/eos/core/Mesh.hpp
+    Args:
+        obj_name: str
+        vertices: shape = (nver, 3)
+        colors: shape = (nver, 3)
+        faces: shape = (ntri, 3)
+        texture: shape = (uv_size, uv_size, 3)
+        uvcoords: shape = (nver, 2) max value<=1
+    '''
+    if os.path.splitext(obj_name)[-1] != '.obj':
+        obj_name = obj_name + '.obj'
+    mtl_name = obj_name.replace('.obj', '.mtl')
+    texture_name = obj_name.replace('.obj', '.png')
+    material_name = 'FaceTexture'
+
+    faces = faces.copy()
+    # mesh lab start with 1, python/c++ start from 0
+    faces += 1
+    if inverse_face_order:
+        faces = faces[:, [2, 1, 0]]
+        if uvfaces is not None:
+            uvfaces = uvfaces[:, [2, 1, 0]]
+
+    # write obj
+    with open(obj_name, 'w') as f:
+        # first line: write mtlib(material library)
+        # f.write('# %s\n' % os.path.basename(obj_name))
+        # f.write('#\n')
+        # f.write('\n')
+
+        # write vertices
+        if colors is None:
+            for i in range(vertices.shape[0]):
+                f.write('v {} {} {}\n'.format(vertices[i, 0], vertices[i, 1], vertices[i, 2]))
+        else:
+            for i in range(vertices.shape[0]):
+                f.write('v {} {} {} {} {} {}\n'.format(vertices[i, 0], vertices[i, 1], vertices[i, 2], colors[i, 0], colors[i, 1], colors[i, 2]))
+
+        # write uv coords
+        if texture is None:
+            for i in range(faces.shape[0]):
+                f.write('f {} {} {}\n'.format(faces[i, 2], faces[i, 1], faces[i, 0]))
+        else:
+            for i in range(uvcoords.shape[0]):
+                f.write('vt {} {}\n'.format(uvcoords[i,0], uvcoords[i,1]))
+            # write f: ver ind/ uv ind
+            uvfaces = uvfaces + 1
+            for i in range(faces.shape[0]):
+                f.write('f {}/{} {}/{} {}/{}\n'.format(
+                    #  faces[i, 2], uvfaces[i, 2],
+                    #  faces[i, 1], uvfaces[i, 1],
+                    #  faces[i, 0], uvfaces[i, 0]
+                    faces[i, 0], uvfaces[i, 0],
+                    faces[i, 1], uvfaces[i, 1],
+                    faces[i, 2], uvfaces[i, 2]
+                )
+                )
+
 
 ## load obj,  similar to load_obj from pytorch3d
 def load_obj(obj_filename):
